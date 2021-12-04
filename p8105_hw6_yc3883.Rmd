@@ -150,6 +150,8 @@ cv_output
 
 # Problem 2
 
+Download the 2017 Central Park weather data
+
 ```{r}
 weather_df = 
   rnoaa::meteo_pull_monitors(
@@ -162,5 +164,55 @@ weather_df =
     tmin = tmin / 10,
     tmax = tmax / 10) %>%
   select(name, id, everything())
+```
+
+We’ll focus on a simple linear regression with tmax as the response and tmin as the predictor, and are interested in the distribution of two quantities estimated from these data:
+
+1. r^2
+2. log(β0∗β1)
+
+Use 5000 bootstrap samples. 
+
+```{r}
+boostrap_weather = 
+  weather_df %>% 
+  bootstrap(n = 5000, id = "strap_number") %>% 
+  mutate(
+    models = map(.x = strap, ~lm(tmax ~ tmin, data = .x)),
+    rs_result = map(models, broom::glance),
+    log_result = map(models, broom::tidy)
+  ) %>% 
+  select(strap_number, rs_result, log_result)
+```
+
+For each bootstrap sample, produce estimates of r^2 quantities. Plot the distribution of your estimates, and describe these in words.
+
+```{r}
+ggp_rs_est = 
+  boostrap_weather %>% 
+  select(strap_number, rs_result) %>% 
+  unnest(rs_result) %>% 
+  ggplot(aes(x = r.squared)) +
+  geom_density()
+```
+
+For each bootstrap sample, produce estimates of log(β0∗β1) quantities. Plot the distribution of your estimates, and describe these in words.
+
+```{r}
+ggp_log_est = 
+  boostrap_weather %>% 
+  select(strap_number, log_result) %>% 
+  unnest(log_result) %>% 
+  select(strap_number, term, estimate) %>% 
+  pivot_wider(
+    names_from = "term",
+    values_from = "estimate"
+  ) %>% 
+  janitor::clean_names() %>% 
+  mutate(
+    log_b0b1 = log(intercept * tmin)
+  ) %>% 
+  ggplot(aes(x = log_b0b1)) +
+  geom_density()
 ```
 

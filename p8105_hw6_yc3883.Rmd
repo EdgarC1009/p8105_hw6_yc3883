@@ -33,9 +33,7 @@ theme_set(theme_minimal() + theme(legend.position = "bottom"))
 # Problem 1
 ## Problem 1 (a)
 
-Load and clean the child’s birthweight data
-
-??menarche with 0????
+Load and clean the child’s birthweight data.
 
 ```{r}
 child_bw_df = 
@@ -149,7 +147,7 @@ cv_output
 
 
 # Problem 2
-
+## Problem 2 (a)
 Download the 2017 Central Park weather data
 
 ```{r}
@@ -185,21 +183,33 @@ boostrap_weather =
   select(strap_number, rs_result, log_result)
 ```
 
-For each bootstrap sample, produce estimates of r^2 quantities. Plot the distribution of your estimates, and describe these in words.
+## Problem 2 (b)
+For each bootstrap sample, produce estimates of r^2 quantities. Plot the distribution of your estimates, and describe these in words. Identify the 2.5% and 97.5% quantiles to provide a 95% confidence interval.
 
 ```{r}
-ggp_rs_est = 
+rs_est = 
   boostrap_weather %>% 
   select(strap_number, rs_result) %>% 
-  unnest(rs_result) %>% 
+  unnest(rs_result)
+
+quantile(rs_est$r.squared, probs = c(0.025, 0.975)) 
+
+ggp_rs_est = 
+  rs_est %>% 
   ggplot(aes(x = r.squared)) +
   geom_density()
+
+ggp_rs_est
 ```
 
-For each bootstrap sample, produce estimates of log(β0∗β1) quantities. Plot the distribution of your estimates, and describe these in words.
+The distribution of estimated r^2 has a mean of `r mean(pull(rs_est, r.squared))`, which represents a strong association between "tmax" and "tmin". The standard deviation of the distribution is `r sd(pull(rs_est, r.squared))`
+
+
+## Problem 2 (c)
+For each bootstrap sample, produce estimates of log(β0∗β1) quantities. Plot the distribution of your estimates, and describe these in words. Identify the 2.5% and 97.5% quantiles to provide a 95% confidence interval.
 
 ```{r}
-ggp_log_est = 
+log_est = 
   boostrap_weather %>% 
   select(strap_number, log_result) %>% 
   unnest(log_result) %>% 
@@ -211,8 +221,14 @@ ggp_log_est =
   janitor::clean_names() %>% 
   mutate(
     log_b0b1 = log(intercept * tmin)
-  ) %>% 
+  )
+
+quantile(log_est$log_b0b1, probs = c(0.025, 0.975))
+
+ggp_log_est = 
+  log_est %>% 
   ggplot(aes(x = log_b0b1)) +
   geom_density()
 ```
 
+The distribution of estimated r^2 has a mean of `r mean(pull(log_est, log_b0b1))`. The standard deviation of the distribution is `r sd(pull(log_est, log_b0b1))`

@@ -58,7 +58,7 @@ train_df = sample_n(child_bw_df, 3500)
 test_df = anti_join(child_bw_df, train_df)
 ```
 
-Propose a regression model for birthweight base on baby’s head circumference at birth and baby’s length at birth
+Propose a regression model using birthweight as response.
 
 Check assumption of regression
 
@@ -90,7 +90,7 @@ bwt_den =
 
 Describe the modeling process:
  
-Fit the model. We have two possible models for candidates. Model_1 uses "bhead" and "blength" as predictors. Model_2 uses "bhead" and "gaweeks" as predictors. We will compare the cross-validated prediction error of these models. Also, we can also see the p-value for different variables and compare the strength of association between predictors and baby birthweight
+Fit the model. We have two possible models as candidates. Model_1 uses "bhead" and "blength" as predictors. Model_2 uses "bhead" and "gaweeks" as predictors. We will compare the cross-validated prediction error of these models. Also, we can also see the p-value for different variables and compare the strength of association between predictors and baby birthweight
 
 ```{r}
 model_1 = 
@@ -162,7 +162,7 @@ model1_des_plot
 
 Compare your model to two others:
 
-A. One using length at birth and gestational age as predictors (main effects only)
+A. One using length at birth and gestational age as predictors (main effects only). 
 B. One using head circumference, length, sex, and all interactions (including the three-way interaction) between these
 
 Generate the A and B models
@@ -295,6 +295,8 @@ ggp_log_est =
   log_est %>% 
   ggplot(aes(x = log_b0b1)) +
   geom_density()
+
+ggp_log_est
 ```
 
 The distribution of estimated log(β0∗β1) has a mean of `r mean(pull(log_est, log_b0b1))`. The standard deviation of the distribution is `r sd(pull(log_est, log_b0b1))`. This distribution is may be more approach normal distribution compared with the estimated r^2 distribution, which has a little bit shift to right. 

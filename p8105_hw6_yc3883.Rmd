@@ -299,4 +299,4 @@ ggp_log_est =
 ggp_log_est
 ```
 
-The distribution of estimated log(β0∗β1) has a mean of `r mean(pull(log_est, log_b0b1))`. The standard deviation of the distribution is `r sd(pull(log_est, log_b0b1))`. This distribution is may be more approach normal distribution compared with the estimated r^2 distribution, which has a little bit shift to right. 
+The distribution of estimated log(β0∗β1) has a mean of `r mean(pull(log_est, log_b0b1))`. The standard deviation of the distribution is `r sd(pull(log_est, log_b0b1))`. This distribution may be more approaching to a normal distribution compared with the estimated r^2 distribution, which has a little bit shift to right. 
